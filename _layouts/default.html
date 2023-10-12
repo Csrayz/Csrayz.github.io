@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="{{ site.author }}" />
+  <title>{{ page.title }} | {{ site.author }}</title>
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link href="/feed/" rel="alternate" title="{{ site.author }}" type="application/atom+xml" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8"
+    crossorigin="anonymous"></script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="{{ " /assets/css/syntax.css" | prepend: site.baseurl }}">
+</head>
+
+<body>
+  <div id="container">
+    <div id="main" role="main">
+      <header>
+        <h1 style="font-size: 1.9rem;font-weight: 400;">{{ page.title }}</h1>
+      </header>
+      <nav>
+        <span><a title="home page" class="" href="/">Home</a></span>
+        <span><a title="tags" class="" href="/tags/">Tags</a></span>
+        <span><a title="about" class="" href="/about/">About</a></span>
+      </nav>
+      <article class="content">
+        {{ content }}
+      </article>
+    </div>
+
+    <footer>
+      <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2023 - {{site.time |
+          date:"%Y"}} by <a href="/about/">{{site.author}}</a></small></p>
+    </footer>
+
+  </div>
+
+</body>
+
+</html>

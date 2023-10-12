@@ -1,0 +1,29 @@
+markdown: kramdown
+lsi: true
+highlighter: rouge
+
+permalink: /:title/
+url: https://Csrayz.github.io
+name: Csrayz
+author: Csrayz
+github: Csrayz
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+exclude: ["Rakefile", "CNAME", "README.md"]
+safe: false
+timezone: Asia/Shanghai
+paginate: 15
+
+# Gems
+
+gems: [jekyll-paginate]
+plugins: [jekyll-paginate]
+
+defaults:
+  - scope:
+      path: "_posts" # 一个空的字符串代表项目中所有的文件
+    values:
+      layout: "post"
+      author: "Csrayz"
+      comments: false
