@@ -3,7 +3,7 @@ lsi: true
 highlighter: rouge
 
 permalink: /:title/
-url: https://Csrayz.github.io
+url: "https://Csrayz.github.io"
 name: Csrayz
 author: Csrayz
 github: Csrayz
@@ -15,10 +15,7 @@ safe: false
 timezone: Asia/Shanghai
 paginate: 15
 
-# Gems
-
-gems: [jekyll-paginate]
-plugins: [jekyll-paginate]
+plugins: [jekyll-paginate, jekyll-sitemap]
 
 defaults:
   - scope:
