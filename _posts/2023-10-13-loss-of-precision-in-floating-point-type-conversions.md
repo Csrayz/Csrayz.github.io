@@ -3,12 +3,12 @@ date: 2023-10-13 20:34:00+08:00
 slug: loss-of-precision-in-floating-point-type-conversions
 title: 浮点数类型转换时的精度丢失问题
 tags:
-- 底层
+- 数据结构
 ---
 
 众所周知，浮点数与整形类型在相互转换后可能发生的精度丢失问题。浮点数转换为整形会发生**截断**和**溢出**问题，整形转换为浮点型会发生**精度丢失**问题。究其原因，是浮点型和整形在存储模式上的差异导致的。
 
-![Java类型转换时可能发生的精度丢失（虚线代表该转换存在精度丢失问题）](/img/in-posts/2023-10-13-loss-of-precision-in-floating-point-type-conversions-1.png)
+![Java类型转换时可能发生的精度丢失（虚线代表该转换存在精度丢失问题）](/img/in-posts/2023-10-13-loss-of-precision-in-floating-point-type-conversions/1.png)
 *Java类型转换时可能发生的精度丢失（虚线代表该转换存在精度丢失问题）*
 
 # 整形与浮点数的存储模式
@@ -31,7 +31,7 @@ $$
 
 例如， 25.125（11001.001）就可以表示为 $$1.1001001 \times 2^4$$ ，对应的有 $$M=1.1001001$$，$$E=100$$（二进制）。
 
-![32位浮点数表示25.125（尾数指小数部分）](/img/in-posts/2023-10-13-loss-of-precision-in-floating-point-type-conversions-2.webp)
+![32位浮点数表示25.125（尾数指小数部分）](/img/in-posts/2023-10-13-loss-of-precision-in-floating-point-type-conversions/2.webp)
 *32位浮点数表示25.125（尾数指小数部分）*
 
 float32 类型是一种浮点数，它用 32 位（也就是 4 个字节）来存储一个小数。它的存储方式是把这 32 位分成三部分，第一位是符号位，表示正负号；后面 8 位是指数位，表示小数点的位置；最后 23 位是尾数位，表示小数的精度。
