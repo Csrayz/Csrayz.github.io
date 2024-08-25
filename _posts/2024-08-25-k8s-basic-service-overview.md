@@ -19,7 +19,8 @@ Service 作为一种抽象机制，为提供相同服务的一组 Pod 提供了�
 
 因此，Service 成为了 Kubernetes 中实现微服务架构和保障服务间通信稳定性的核心组件。
 
-​![K8s基础理论—Service详解](/img/in-posts/2024-08-25-k8s-basic-service-overview/1.webp)​
+​![​Service与Pod的关系](/img/in-posts/2024-08-25-k8s-basic-service-overview/1.webp)
+*​Service与Pod的关系*
 
 # Service 资源定义
 
@@ -51,15 +52,17 @@ spec:
 至于 Service 暴露给集群外部客户端的方式，Kubernetes 提供了四种不同的访问方式，分别是 `ClusterIP`​、`NodePort`​、`LoadBalancer`​ 和 `ExternalName`​。这些方式各具特点，可根据实际需求选择适合的暴露方式。
 
 ​![4种Service的区别联系](/img/in-posts/2024-08-25-k8s-basic-service-overview/12.png)​
+*4种Service的区别联系*
 
 |访问方式|说明|
 | :--------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|​`ClusterIP`​<br />（默认方式）<br />|服务只能够在集群内部可以访问，通过集群的==内部 IP== 暴露服务，这也是默认的 `ServiceType`​。<br />|
-|​`NodePort`​<br />（向外暴露）<br />|可以从集群的外部访问一个 `NodePort`​ 服务。通过**每个 Node** 上的  ==IP 和静态端口==（`NodePort`​）暴露服务。`NodePort`​ 服务会自动创建一个 `ClusterIP`​ 服务，外部请求首先到达 `NodePort`​，然后被转发到 `ClusterIP`​|
+|​`ClusterIP`​<br />（默认方式）<br />|服务只能够在集群内部可以访问，通过集群的内部 IP 暴露服务，这也是默认的 `ServiceType`​。<br />|
+|​`NodePort`​<br />（向外暴露）<br />|可以从集群的外部访问一个 `NodePort`​ 服务。通过**每个 Node** 上的  IP 和静态端口（`NodePort`​）暴露服务。`NodePort`​ 服务会自动创建一个 `ClusterIP`​ 服务，外部请求首先到达 `NodePort`​，然后被转发到 `ClusterIP`​|
 |​`LoadBalancer`​<br />（向外暴露）<br />|和 nodePort 类似，不过除了使用一个 Cluster IP 和 nodePort 之外，还会向所使用的公有云申请一个负载均衡器，实现从集群外通过 LB 访问服务。<br />使用云提供商的负载均衡器，可以向外部暴露服务。外部的负载均衡器可以路由到 `NodePort`​ 服务和 `ClusterIP`​ 服务。在公有云提供的 Kubernetes 服务里，都使用了一个叫作 CloudProvider 的转接层，来跟公有云本身的 API 进行对接。所以，Kubernetes 就会调用 CloudProvider 在公有云上为你创建一个负载均衡服务，并且把被代理的 Pod 的 IP 地址配置给负载均衡服务做后端。<br />|
 |​`ExternalName`​|此模式主要面向运行在集群外部的服务，通过它可以将外部服务映射进 k8s 集群。<br />通过返回 `CNAME`​ 和它的值，可以将服务映射到 `externalName`​ 字段的内容（例如， `foo.bar.example.com`​）。 没有任何类型代理被创建，这只有 Kubernetes 1.7 或更高版本的 `kube-dns`​ 才支持。<br />|
 
-​![四种类型的Service访问示意](/img/in-posts/2024-08-25-k8s-basic-service-overview/3.webp )​
+​![四种类型的Service访问示意](/img/in-posts/2024-08-25-k8s-basic-service-overview/3.webp)​
+*四种类型的Service访问示意*
 
 对于一个普通的 Service（仅限于 `ClusterIP`​、`NodePort`​、`LoadBalancer`​），Kubernetes 通过为其分配一个集群内部可访问的 Cluster IP，实现了集群内对 Service 的访问。
 
@@ -89,6 +92,7 @@ Pod 和 Service 作为 K8s 的核心抽象，仅仅定义这些抽象资源是�
 Pod 在宿主机节点上运行，并通过虚拟网卡（veth pair）与节点进行通信。Node 节点内部的虚拟网桥（例如 10.1.0.1/24）负责发现并连接独立 IP 主机。当 PodA 需要访问 PodB 时，报文会通过 eth0 发送，并由虚拟网桥转发至目标网卡，从而实现通讯。
 
 ​![一个Node中的两个Pod的通讯流程。（疑问：虚拟网桥作为链路层设备，图中所示是否意味着它能转发IP报文？）](/img/in-posts/2024-08-25-k8s-basic-service-overview/6.webp)​
+*一个Node中的两个Pod的通讯流程。（疑问：虚拟网桥作为链路层设备，图中所示是否意味着它能转发IP报文？）*
 
 ## Pod 与 Service 通讯
 
@@ -96,21 +100,24 @@ Pod 在宿主机节点上运行，并通过虚拟网卡（veth pair）与节点�
 
 1. ServiceA 发送的数据包的目标 IP 地址是 Service2 的 IP 地址，根据虚拟网桥的路由表，路由至 iptables 或 IPVS
 
-    以 iptables 为例，此时 iptables 将目标 IP 地址改写为 10.1.1.17，即 ==**Service2 的其中一个 pod**== ==的 endpoint 地址==。iptables 由 kube-proxy 进行维护，见 Kube-proxy
+    以 iptables 为例，此时 iptables 将目标 IP 地址改写为 10.1.1.17，即 **Service2 的其中一个 pod** 的 endpoint 地址。iptables 由 kube-proxy 进行维护，见 Kube-proxy
 2. 数据包经过节点的网口 etho0 来到集群网络，并被路由到 Pod C 所在节点
 3. 数据包再经由 iptables、虚拟网桥和 veth0 最终找到对应的 PodC
 
 ​![一个集群内部的中的两个Service是如何通讯的](/img/in-posts/2024-08-25-k8s-basic-service-overview/4.webp)​
+*一个集群内部的中的两个Service是如何通讯的*
 
 # Kube-proxy
 
 Service 在很多情况下只是一个概念，Pod 将服务注册到 Service，真正实现提供服务发现与负载均衡的其实是 kube-proxy 服务进程。每个 Node 节点上都运行着一个 kube-proxy 服务进程，当创建 Service 的时候会通过 api-server 向 etcd 写入创建的 service 信息，而 kube-proxy 会基于监听的机制发现这种 Service 的变动，然后它会将最新的 Service 信息转换成对应的访问规则。
 
 ​![示意图](/img/in-posts/2024-08-25-k8s-basic-service-overview/8.png)​
+*示意图*
 
-kube-proxy 组件负责实现除 ExternalName 之外的==虚拟 IP== 机制服务。每个 kube-proxy 实例都会监视 Kubernetes 控制平面用于添加和删除 Service 和 EndpointSlice 对象。对于每个服务，kube-proxy 调用适当的 API（取决于 kube-proxy 模式）来配置节点规则以分配 Service 的 clusterIP 和的流量，并将该流量重定向到服务的端点之一（端点通常是 Pod，但可能是用户提供的任意 IP 地址）。
+kube-proxy 组件负责实现除 ExternalName 之外的虚拟 IP 机制服务。每个 kube-proxy 实例都会监视 Kubernetes 控制平面用于添加和删除 Service 和 EndpointSlice 对象。对于每个服务，kube-proxy 调用适当的 API（取决于 kube-proxy 模式）来配置节点规则以分配 Service 的 clusterIP 和的流量，并将该流量重定向到服务的端点之一（端点通常是 Pod，但可能是用户提供的任意 IP 地址）。
 
 ​![Service 负载均衡与服务发现架构](/img/in-posts/2024-08-25-k8s-basic-service-overview/7.webp)​
+*Service 负载均衡与服务发现架构*
 
 ## iptables
 
@@ -119,6 +126,7 @@ kube-proxy 组件负责实现除 ExternalName 之外的==虚拟 IP== 机制服�
 常见的代理模式就是直接使用 iptables 转发当前节点上的全部流量，这种脱离了用户空间在内核空间中实现转发的方式能够极大地提高 proxy 的效率，增加 kube-proxy 的吞吐量。
 
 ​![kube-proxy只用于更新iptables规则](/img/in-posts/2024-08-25-k8s-basic-service-overview/10.png)​
+*kube-proxy只用于更新iptables规则*
 
 看起来 service 是个完美的方案，可以解决服务访问的所有问题，但是 service 这个方案（iptables 模式）也有自己的缺点。
 
