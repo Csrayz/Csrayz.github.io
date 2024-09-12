@@ -1,5 +1,5 @@
 ---
-date: 2024-05-25 14:16:00+08:00
+date: 2024-08-25 14:16:00+08:00
 slug: k8s-basic-service-overview
 title: K8s基础理论—Service详解
 tags:
