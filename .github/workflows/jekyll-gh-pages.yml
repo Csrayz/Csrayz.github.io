@@ -33,7 +33,7 @@ jobs:
         uses: actions/configure-pages@v3  # Already up-to-date
 
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1  # Already up-to-date
+        uses: actions/jekyll-build-pages@v2  # Updated to v2 (if available)
         with:
           source: ./
           destination: ./_site
