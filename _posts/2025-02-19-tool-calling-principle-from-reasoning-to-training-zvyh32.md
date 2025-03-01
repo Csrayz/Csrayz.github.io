@@ -57,7 +57,7 @@ published: true
 
   基于预训练模型构建指令对话模型时，会用到**聊天模板**来规范每个模型的**聊天格式**和**控制词元**。最终让用户的输入以该模板的形式呈现。聊天模板通过 Jinja 模板引擎将对话结构标准化。以 `gpt-3.5-turbo`​ 的模板为例：
 
-  ```json
+  ```raw
   <|im_start|>system\n你是ChatGPT, 是来帮助人们解决问题的AI模型<|im_end|>
   <|im_start|>user\n你好<|im_end|>
   <|im_start|>assistant    // 给出start标签和角色，期望模型补全对话内容。
