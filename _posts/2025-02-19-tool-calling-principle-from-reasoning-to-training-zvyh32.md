@@ -16,7 +16,7 @@ published: true
 
 工具调用（Tool Calling）是大型语言模型（LLM）应用开发中的关键技术，其本质是让模型具备**结构化输出能力。**
 
-在大型语言模型（LLM）的应用开发中，一个常见的误区是将<u>工具调用</u>​<u>**误认为**</u>​<u>是由模型本身直接执行的操作</u>。**LLM本身不直接执行工具调用**。模型的核心作用是：
+在大型语言模型（LLM）的应用开发中，一个常见的误区是将<u>工具调用</u>​<u>**误认为**</u>​<u>是由模型本身直接执行的操作</u>。**LLM 本身不直接执行工具调用**。模型的核心作用是：
 
 1. 理解用户意图
 2. 判断是否需要调用工具
@@ -24,7 +24,7 @@ published: true
 
 ​![image](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234206.png "LLM工具调用逻辑")​
 
-举个简单的例子：当用户查询「价格在undefined元之间的电器」时，模型会分析出用户的需求，并决定调用一个数据库查询工具`database_tool`​。这一过程要求模型能够精准进行**信息抽取**，并生成**结构化**的输出。
+举个简单的例子：当用户查询「价格在 undefined 元之间的电器」时，模型会分析出用户的需求，并决定调用一个数据库查询工具 `database_tool`​。这一过程要求模型能够精准进行**信息抽取**，并生成**结构化**的输出。
 
 了解工具调用机制，需解决的核心问题是理解**触发条件的判定逻辑（** 换句话说，**<u>工具调用的触发机制是怎样的</u>**）：
 
@@ -139,7 +139,7 @@ published: true
 
 以 LLaMA3.3 为例，处理后的消息格式如下：
 
-```json
+```raw
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
 You are an expert in composing functions. You are given a question and a set of possible functions.
@@ -191,11 +191,11 @@ Here is a list of functions in JSON format that you can invoke.
 1. **接收模型输出**：获取模型生成的响应内容。
 2. **格式解析**：对比预定义的聊天模板文件，解析响应格式。
 
-    > 一个可能的解析逻辑：
-    >
-    > 1. 推理框架通过预定义的标识符 `<|eom_id>`​ 标识此次响应是一次工具调用
-    > 2. 判断此次返回是否为合法的 JSON 对象。
-    >
+   > 一个可能的解析逻辑：
+   >
+   > 1. 推理框架通过预定义的标识符 `<|eom_id>`​ 标识此次响应是一次工具调用
+   > 2. 判断此次返回是否为合法的 JSON 对象。
+   >
 3. **参数提取**：解析函数名及参数信息，提取函数名与参数信息。
 4. **API 路由**：将请求路由至相应的外部工具或 API。
 5. **执行与反馈**：执行工具调用并返回标准化结果。
@@ -259,7 +259,7 @@ def number_adder(a: int, b: int) -> int:
 2. 助手的工具调用请求。`"role": "assistant", "content": "", "tool_calls": [{xxx}]`​
 3. 工具返回的结果。`"role": "tool", "content": "5", "tool_call_id": "call_2v4w"`​
 
-    ​`tool_call_id`​ 主要用途是在并行工具调用时匹配调用请求和返回值
+   ​`tool_call_id`​ 主要用途是在并行工具调用时匹配调用请求和返回值
 
 ## 6. 客户端：封装工具调用结果并再次请求
 
@@ -388,7 +388,7 @@ Y： {"arguments":"","name":"get_date"}
 
 在 LLaMA3.3 模型中，这一描述会被包含在系统消息中，紧接着是用户的具体请求内容。当我们提供一个天气查询接口时，该接口的描述信息会被嵌入到系统提示（System Prompt）中，作为训练数据的一部分。以下是一个完整的示例，展示了系统提示、用户请求以及模型期望的响应格式：
 
-```json
+```raw
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
 You are an expert in composing functions. You are given a question and a set of possible functions.
@@ -423,7 +423,7 @@ What is the weather in SF and Seattle?<|eot_id|>
 
 为了确保模型能够正确响应工具调用请求，我们在训练数据中选择成功的工具调用结果作为标签数据。以下是一个具体的示例：
 
-```
+```raw
 [get_weather(city='San Francisco', metric='celsius'), get_weather(city='Seattle', metric='celsius')]<|eot_id|>
 ```
 
@@ -439,18 +439,18 @@ What is the weather in SF and Seattle?<|eot_id|>
 
 1. 直接响应，而不调用工具
 
-    此时模型直接生成自然语言响应，例如：
+   此时模型直接生成自然语言响应，例如：
 
-    ```
-    Sunny weather in San Francisco, rainy weather in Seattle<|eot_id|>
-    ```
+   ```
+   Sunny weather in San Francisco, rainy weather in Seattle<|eot_id|>
+   ```
 2. 调用工具
 
-    模型生成工具调用请求，例如：
+   模型生成工具调用请求，例如：
 
-    ```
-    [{"name": "get_weather", "parameters": {"city": "San Francisco", "metric": "celsius"}}, {"name": "get_weather", "parameters": {"city": "Seattle", "metric": "celsius"}}]<|eot_id|>
-    ```
+   ```raw
+   [{"name": "get_weather", "parameters": {"city": "San Francisco", "metric": "celsius"}}, {"name": "get_weather", "parameters": {"city": "Seattle", "metric": "celsius"}}]<|eot_id|>
+   ```
 
 针对工具调用和结构化输出场景微调的对话模型，经过了 STF 或 RLHF 学习后，能够**有效区分**是否需要结构化工具调用。在需要时，模型通常会以较高的概率选择调用工具。
 
@@ -477,7 +477,7 @@ Qwen2 的工具调用模板主要包含以下几部分：
 
 与 LLaMA3.3 一样，Qwen 也将工具调用放入了 System Prompt 作为提示词。不同点在于，其针对工具调用场景，单独格式化工具描述是，而非直接将工具描述的 JSON 放入其中。（为了展示，下方将 `\n`​ 以换行方式展示）：
 
-```json
+```raw
 <|im_start|>system
 You are a helpful assistant.
 
