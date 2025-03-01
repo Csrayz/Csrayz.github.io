@@ -29,17 +29,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4  # Updated to v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v3  # Already up-to-date
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1  # Use the Ruby version required by your Jekyll site
+
+      - name: Install Bundler
+        run: gem install bundler
+
+      - name: Install dependencies
+        run: bundle install
 
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v2  # Updated to v2 (if available)
-        with:
-          source: ./
-          destination: ./_site
+        run: bundle exec jekyll build --destination ./_site
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2  # Already up-to-date
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./_site
 
   # Deployment job
   deploy:
