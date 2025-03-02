@@ -37,7 +37,7 @@ published: true
 
 此外，为进一步理解 LLM 为何会响应工具调用请求，本文还给出了 Tool Call 的微调流程。
 
-# LLM 的训练流程
+## LLM 的训练流程
 
 > 这部分介绍了一个大模型从零开始训练都会经历哪几步，给读者一个对大模型的全局了解。
 >
@@ -52,7 +52,7 @@ published: true
 2. **有监督微调（SFT）。** 在预训练基座（Base Model）上注入对话数据（如人工标注的问答对），通过指令微调范式（Instruction Tuning）使模型掌握遵循指令、生成结构化响应的能力。
 3. **强化学习反馈（RLHF）。** 通过人类的偏好、评价或直接指导来优化智能体的行为，使其更符合人类的期望和价值观。通过该阶段，也能优化生成文本的可读性、改变思维方式等。
 
-## 基本概念
+### 基本概念
 
 *  **「聊天模板」**
 
@@ -71,7 +71,7 @@ published: true
 
   在这过程中，关键是通过标注数据训练模型**生成结构化指令**。例如，可以将工具描述、参数提取示例作为输入，训练模型生成结构化调用指令。
 
-# LLM 的推理流程（工具调用）
+## LLM 的推理流程（工具调用）
 
 接下来，我们将深入探究工具调用时，一轮 LLM 请求的完整生命周期，详细剖析从请求发起直至最终响应的全链路处理流程。在此过程中，我们将以兼容 OpenAI Tool Calling 标准的实现为例展开讲解。
 
@@ -99,7 +99,7 @@ published: true
 * 「大语言模型」则是核心的模型文件，它能够接收一段文本并完成内容补全。
 * 「外部工具」是实际执行工具处理任务的所在，其形式具有多样性，既可能是客户端编写的一段 Python 函数，也可能是通过 Python 封装的外部 HTTP 请求。
 
-## 1. 客户端：发送对话补全请求
+### 1. 客户端：发送对话补全请求
 
 客户端会构建包含工具描述的标准化请求，下面以加法器 `number_adder`​ 的调用为例进行说明。当需要进行工具调用时，我们需将工具描述作为请求参数的一部分。
 
@@ -132,7 +132,7 @@ published: true
 }
 ```
 
-## 2. 推理框架：格式化请求
+### 2. 推理框架：格式化请求
 
 推理框架接收到请求后，会按照特定的**聊天模板**对输入进行格式化处理。
 
@@ -171,7 +171,7 @@ Here is a list of functions in JSON format that you can invoke.
 <|start_header_id|>assistant<|end_header_id|> // 给出start标签和角色，期望模型补全对话内容。
 ```
 
-## 3. 大语言模型：生成工具调用指令
+### 3. 大语言模型：生成工具调用指令
 
 模型在处理请求后，会生成相应的工具调用响应：
 
@@ -183,7 +183,7 @@ Here is a list of functions in JSON format that you can invoke.
 
 因为此次是一条工具调用响应，涉及到多轮调用。模型在识别到该场景后，输出了代表消息结束的特殊标识符 `<|eom_id>`​ 而非此轮对话结束的标识符 `<|eom_id>`​.
 
-## 4. 推理框架：返回工具调用指令
+### 4. 推理框架：返回工具调用指令
 
 ​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234159.png)​
 
@@ -237,7 +237,7 @@ Here is a list of functions in JSON format that you can invoke.
 }
 ```
 
-## 5. 客户端：模型调用方
+### 5. 客户端：模型调用方
 
 需要再次明确的是，大模型本身并不直接进行工具调用，工具的实际调用发生在客户端。
 
@@ -262,7 +262,7 @@ def number_adder(a: int, b: int) -> int:
 
    ​`tool_call_id`​ 主要用途是在并行工具调用时匹配调用请求和返回值
 
-## 6. 客户端：封装工具调用结果并再次请求
+### 6. 客户端：封装工具调用结果并再次请求
 
 ​![mermaid-diagram-1740405063676](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234204.png)​
 
@@ -340,7 +340,7 @@ The answer is 5.<|eot_id|>
 }
 ```
 
-# Tool Call 微调流程
+## Tool Call 微调流程
 
 在深入理解 LLM 的推理机制后，我们面临着一个关键的技术挑战：如何确保工具调用的**稳定**性和**可靠**性。具体而言，这涉及到两个核心问题：
 
@@ -354,7 +354,7 @@ X： 今天是多少号？你的工具有：get_day, 参数为{"description":"Ge
 Y： {"arguments":"","name":"get_date"}
 ```
 
-## LLaMA 3.3 微调
+### LLaMA 3.3 微调
 
 在 [LLaMA3.3](https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/) 模型中，微调流程通过引入一系列特殊的标记（special tokens）来支持多轮对话和工具调用：
 
@@ -455,7 +455,7 @@ What is the weather in SF and Seattle?<|eot_id|>
 
 针对工具调用和结构化输出场景微调的对话模型，经过了 STF 或 RLHF 学习后，能够**有效区分**是否需要结构化工具调用。在需要时，模型通常会以较高的概率选择调用工具。
 
-## Qwen2 微调流程
+### Qwen2 微调流程
 
 Qwen2 在支持工具调用时采用了**独特的模板化方法**，而非依赖于特殊标记。
 
@@ -514,7 +514,7 @@ You are a helpful assistant.
 ✿RETURN✿: 3 + 2 的结果是5
 ```
 
-# 参考内容
+## 参考内容
 
 * https://zhuanlan.zhihu.com/p/713937194
 * https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/
