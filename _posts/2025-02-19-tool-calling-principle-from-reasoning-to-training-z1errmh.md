@@ -23,7 +23,7 @@ published: true
 2. 判断是否需要调用工具
 3. 生成结构化调用指令，实际的工具执行由业务系统或外部服务完成。
 
-​![image](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/image-20250214154217-o6j2hqq.png "LLM工具调用逻辑")​
+​![image](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234206.png "LLM工具调用逻辑")​
 
 举个简单的例子：当用户查询「价格在 undefined 元之间的电器」时，模型会分析出用户的需求，并决定调用一个数据库查询工具 `database_tool`​。这一过程要求模型能够精准进行**信息抽取**，并生成**结构化**的输出。
 
@@ -45,7 +45,7 @@ published: true
 
 对话大模型的训练数据主要分为**通用数据**、**对话数据**和**专业数据**三大类。其训练流程共分为**预训练-微调-对齐（微调和对齐可通常为微调步骤）** 三阶段。有时还会额外添加微调流程，例如 DeepSeek 基于 DeepSeekV3 模型和强化学习微调出了 DeepSeekR1 推理模型。
 
-​![PixPin_2025-02-19_09-57-03](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/PixPin_2025-02-19_09-57-03-20250219095750-w6y88xr.webp)​
+​![PixPin_2025-02-19_09-57-03](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234155.webp)​
 
 1. **预训练阶段（Pretrain）** 。预训练阶段通过海量文本学习语言模式，一般是**自监督学习**范式。在这个过程中，模型学习到了文本的基本范式，具备了生成人类可理解的文字的能力。
 
@@ -86,7 +86,7 @@ published: true
 
 下图是本次工具调用的序列图：
 
-​![mermaid-diagram-1740403968953](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/mermaid-diagram-1740403968953-20250224213303-pg6s3qg.png)​
+​![mermaid-diagram-1740403968953](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234157.png)​
 
 其中：
 
@@ -103,7 +103,7 @@ published: true
 
 客户端会构建包含工具描述的标准化请求，下面以加法器 `number_adder`​ 的调用为例进行说明。当需要进行工具调用时，我们需将工具描述作为请求参数的一部分。
 
-​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/mermaid-diagram-1740404362250-20250224213929-cf13wk7.png)​
+​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234159.png)​
 
 一个完整的对话补全请求主要包含以下三个部分：
 
@@ -136,7 +136,7 @@ published: true
 
 推理框架接收到请求后，会按照特定的**聊天模板**对输入进行格式化处理。
 
-​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/mermaid-diagram-1740404362250-20250224213929-cf13wk7.png)​
+​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234159.png)​
 
 以 LLaMA3.3 为例，处理后的消息格式如下：
 
@@ -179,13 +179,13 @@ Here is a list of functions in JSON format that you can invoke.
 [{"name": "number_adder", "parameters": {"a": 3, "b": 2}}]<|eom_id|>
 ```
 
-​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/mermaid-diagram-1740404362250-20250224213929-cf13wk7.png)​
+​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234159.png)​
 
 因为此次是一条工具调用响应，涉及到多轮调用。模型在识别到该场景后，输出了代表消息结束的特殊标识符 `<|eom_id>`​ 而非此轮对话结束的标识符 `<|eom_id>`​.
 
 ## 4. 推理框架：返回工具调用指令
 
-​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/mermaid-diagram-1740404362250-20250224213929-cf13wk7.png)​
+​![mermaid-diagram-1740404362250](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234159.png)​
 
 推理框架在接收到模型响应后，会执行以下处理流程：
 
@@ -241,7 +241,7 @@ Here is a list of functions in JSON format that you can invoke.
 
 需要再次明确的是，大模型本身并不直接进行工具调用，工具的实际调用发生在客户端。
 
-​![mermaid-diagram-1740405005892](assets/mermaid-diagram-1740405005892-20250224215030-i4rhsr2.png)​
+​![mermaid-diagram-1740405005892](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234202.png)​
 
 以下是一个 Python 实现的工具调用示例，采用了 `langGraph` ​相关开发框架：
 
@@ -264,7 +264,7 @@ def number_adder(a: int, b: int) -> int:
 
 ## 6. 客户端：封装工具调用结果并再次请求
 
-​![mermaid-diagram-1740405063676](assets/mermaid-diagram-1740405063676-20250224215109-rpzh9ah.png)​
+​![mermaid-diagram-1740405063676](https://raw.githubusercontent.com/Csrayz/Csrayz.github.io/main/img/in-posts/20250301234204.png)​
 
 此次请求遵从同样的交互流程。唯一的区别是，此时的 LLM 调用包含三条消息，分别是原始的请求、助手的工具调用请求、工具返回的结果：​​
 
