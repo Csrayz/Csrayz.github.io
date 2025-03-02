@@ -1,7 +1,7 @@
 ---
 title: 工具调用原理：从推理到训练
 date: '2025-02-19 17:18:58'
-permalink: /post/tool-calling-principle-from-reasoning-to-training-z1errmh.html
+permalink: /post/tool-calling-principle-from-reasoning-to-training.html
 tagline: 本文从推理和微调流程入手，详细解释了LLM大模型的工具调用原理
 tags:
   - LLM
