@@ -41,25 +41,7 @@ published: true
 
 这些请求会存放在 waiting 和 running 队列中，以下是这些请求的的状态机（示意图、不保证完整）：
 
-```mermaid
-stateDiagram-v2
-    [*] --> WAITING: Initial State
-
-    WAITING --> RUNNING: Schedule
-    WAITING --> FINISHED_ABORTED: 
-
-    RUNNING --> PREEMPTED: Preempt
-    RUNNING --> FINISHED_STOPPED: Finshed
-    RUNNING --> FINISHED_LENGTH_CAPPED: LengthCapped
-    RUNNING --> FINISHED_ABORTED: CancelRequest / TimeoutWaiting
-
-    PREEMPTED --> WAITING: Reschedule
-    PREEMPTED --> FINISHED_ABORTED 
-
-    FINISHED_STOPPED --> [*]
-    FINISHED_LENGTH_CAPPED --> [*]
-    FINISHED_ABORTED --> [*]
-```
+![image](/img/in-posts/2025-08-07-vllm-v1-scheduler-scheduler-policy-speed-pass/2.webp)
 
 # 调度 Step
 
