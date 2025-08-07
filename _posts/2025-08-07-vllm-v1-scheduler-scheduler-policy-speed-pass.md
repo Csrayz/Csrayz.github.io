@@ -20,7 +20,7 @@ published: true
 4. 每次 Step 处理结束后，系统会为每个运行中的请求生成 1 个新 Token（除非触发停止条件），这些 Token 将参与下一轮调度（如 Step1 需要处理 R1/R2 新生成的 Token）。
 5. 整个调度过程会循环执行，直到所有请求都达到终止状态
 
-![image](https://siyuan.stul-io.top/assets/image-20250727152901-0o3h74l.png)
+![image](/img/in-posts/2025-08-07-vllm-v1-scheduler-scheduler-policy-speed-pass/1.png)
 
 再根据上图，简单介绍调度的基本流程：
 
